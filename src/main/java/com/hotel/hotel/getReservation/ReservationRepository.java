@@ -9,5 +9,7 @@ import java.util.List;
 @Repository("ReservationRepository")
 public interface ReservationRepository extends JpaRepository<ReservationEntity,Long>{
 
-    public List<ReservationEntity> findByArrivalDateBetweenAndDepartureDateBetween(Date arrivalDateStart, Date arrivalDateEnd,Date departureDateStart, Date departureDateEnd);
+    public List<ReservationEntity> findByArrivalDateBetweenOrDepartureDateBetween(Date arrivalDateStart, Date arrivalDateEnd,Date departureDateStart, Date departureDateEnd);
+
+    public List<ReservationEntity> findByDepartureDateGreaterThanAndArrivalDateLessThan(Date Start, Date End);
 }

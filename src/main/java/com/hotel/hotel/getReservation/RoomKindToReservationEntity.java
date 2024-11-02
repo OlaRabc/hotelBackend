@@ -17,9 +17,14 @@ public class RoomKindToReservationEntity {
     private Long roomKindId;
 
     @NonNull
+    private String title;
+    @NonNull
     private String description;
     @NonNull
     private int price;
+
+    @NonNull
+    private int priceBefore;
     @NonNull
     private int amount;
     @NonNull

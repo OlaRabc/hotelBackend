@@ -1,10 +1,9 @@
-package com.hotel.hotel.getReservation;
+package com.hotel.hotel.makeReservation;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
-
 
 @Builder
 @Getter
@@ -14,13 +13,14 @@ import java.sql.Date;
 @Data
 @Entity
 @Table(name = "reserved_rooms")
-public class ReservationEntity {
+public class ReservationRoomsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
 
 
     private Long roomKindId;
+    @NonNull
     private Date arrivalDate;
     @NonNull
     private Date departureDate;

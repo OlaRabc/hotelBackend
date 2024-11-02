@@ -15,6 +15,8 @@ public class RoomKindEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomKindId;
+    @NonNull
+    private String title;
 
     @NonNull
     private String description;

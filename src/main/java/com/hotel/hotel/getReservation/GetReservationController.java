@@ -34,9 +34,11 @@ public class GetReservationController {
     private void setAvailabilityOfRooms(List<RoomDAO> roomDAOS, List<ReservationEntity> reservationEntities) {
 
         for (ReservationEntity reservation : reservationEntities) {
+            System.out.println("@@@@@@@");
+            System.out.println(reservation);
 
             for (RoomDAO roomDAO : roomDAOS) {
-                if (roomDAO.getRoomKindId() == reservation.getReservationId())
+                if (roomDAO.getId() == reservation.getRoomKindId())
                     roomDAO.setFreeRooms(roomDAO.getFreeRooms() - 1);
             }
         }
@@ -50,7 +52,7 @@ public class GetReservationController {
 
         List<RoomDAO> roomDAOS = makeDAORoomList(roomKindEntities);
 
-        List<ReservationEntity> reservationEntities = reservationRepository.findByArrivalDateBetweenAndDepartureDateBetween(arrivalDate, departureDate,arrivalDate, departureDate);
+        List<ReservationEntity> reservationEntities = reservationRepository.findByDepartureDateGreaterThanAndArrivalDateLessThan(arrivalDate, departureDate);
 
         if (reservationEntities.size() > 1) {
             setAvailabilityOfRooms(roomDAOS, reservationEntities);

@@ -16,17 +16,27 @@ import java.sql.Date;
 @Entity
 @Table(name = "reservation")
 public class MakeReservationEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reservationId;
+    private Integer reservationId;
 
-    @NonNull
-    private Integer roomKindId;
-    @NonNull
     private Date arrivalDate;
-    @NonNull
+
     private Date departureDate;
 
-    @NonNull
-    private Long  personalId;
+    private String name;
+
+    private String email;
+
+    private Boolean vatInvoice;
+
+    private String reservationDetails;
+
+    private Boolean agreePromotions;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    private String rooms;
 }

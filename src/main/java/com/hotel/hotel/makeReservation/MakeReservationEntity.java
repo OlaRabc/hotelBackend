@@ -39,4 +39,9 @@ public class MakeReservationEntity {
     private PaymentMethod paymentMethod;
 
     private String rooms;
+    private Boolean isFlowers;
+    private Boolean isProsecco;
+    private Boolean isUndergroundParking;
+    private Boolean isParking;
+    private Boolean isBabyBed;
 }

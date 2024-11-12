@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-
 @Controller
 public class MakeReservationController {
     private MakeReservationRepository makeReservationRepository;
+    private ReservedRoomsRepository reservedRoomsRepository;
 
-    public MakeReservationController(MakeReservationRepository makeReservationRepository) {
+    public MakeReservationController(MakeReservationRepository makeReservationRepository, ReservedRoomsRepository reservedRoomsRepository) {
         this.makeReservationRepository = makeReservationRepository;
+        this.reservedRoomsRepository = reservedRoomsRepository;
     }
 
 //    public void makeReservation(MakeReservationDAO reservation) {
@@ -42,44 +42,49 @@ public class MakeReservationController {
 
     @PostMapping("/make-reservation")
     @ResponseBody
-    public ResponseEntity<?> postCompanyComment(@RequestBody List<MakeReservationDAO> makeReservationDAO) {
-        System.out.println(makeReservationDAO.toString());
+    public ResponseEntity<?> postCompanyComment(@RequestBody MakeReservationDAO reservationDAO) {
 
-        for (MakeReservationDAO reservationDAO : makeReservationDAO
+         MakeReservationEntity reservationEntity = new MakeReservationEntity(
+                null,
+                reservationDAO.getArrivalDate(),
+                reservationDAO.getDepartureDate(),
+                reservationDAO.getName(),
+                reservationDAO.getMail(),
+                reservationDAO.getVatInvoice(),
+                reservationDAO.getReservationDetails(),
+                reservationDAO.getAgreePromotions(),
+                reservationDAO.getPaymentMethod(),
+                "",
+                 false,
+                 false,
+                 false,
+                 false,
+                 false
+                 );
+
+        for (RoomDAO room : reservationDAO.getRoomList()
         ) {
-            MakeReservationEntity reservationEntity = new MakeReservationEntity(
-                    null,
-                    reservationDAO.getArrivalDate(),
-                    reservationDAO.getDepartureDate(),
-                    reservationDAO.getName(),
-                    reservationDAO.getMail(),
-                    reservationDAO.getVatInvoice(),
-                    reservationDAO.getReservationDetails(),
-                    reservationDAO.getAgreePromotions(),
-                    reservationDAO.getPaymentMethod(),
-                    "room");
+            for (int i = 0; i < room.getRoomCount(); i++) {
+                ReservedRoomsEntity reserved = reservedRoomsRepository.saveAndFlush(
+                        new ReservedRoomsEntity(
+                                null,
+                                room.getId(),
+                                reservationDAO.getArrivalDate(),
+                                reservationDAO.getDepartureDate()
+                        ));
 
-            for (RoomDAO room : reservationDAO.getRoomList()
-            ) {
-
-                    ReservationRoomsEntity roomEntity = new ReservationRoomsEntity(
-                            null,
-                            room.getId(),
-                            reservationDAO.getArrivalDate(),
-                            reservationDAO.getDepartureDate());
-
-                for (int i = 0; i < room.getRoomCount(); i++) { //zapisanie tego
-                    System.out.println("@@@");
-                    System.out.println(roomEntity);
-                }
+                reservationEntity.setRooms(reservationEntity.getRooms()+" "+ reserved.getRoomKindId());
             }
-
         }
-//        for (MakeReservationDAO reservation : makeReservationDAO) {
-//            makeReservation(reservation);
-//        }
 
-        return new ResponseEntity("ok", HttpStatus.OK);
+        if(reservationDAO.getServiceList().contains("FLOWERS")) reservationEntity.setIsFlowers(true);
+        if(reservationDAO.getServiceList().contains("PROSECCO")) reservationEntity.setIsProsecco(true);
+        if(reservationDAO.getServiceList().contains("UNDERGROUND")) reservationEntity.setIsUndergroundParking(true);
+        if(reservationDAO.getServiceList().contains("PARKING")) reservationEntity.setIsParking(true);
+        if(reservationDAO.getServiceList().contains("BABY")) reservationEntity.setIsBabyBed(true);
+
+
+        makeReservationRepository.saveAndFlush(reservationEntity);
+        return new ResponseEntity(HttpStatus.OK, HttpStatus.OK);
     }
-
 }

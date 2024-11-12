@@ -34,9 +34,6 @@ public class GetReservationController {
     private void setAvailabilityOfRooms(List<RoomDAO> roomDAOS, List<ReservationEntity> reservationEntities) {
 
         for (ReservationEntity reservation : reservationEntities) {
-            System.out.println("@@@@@@@");
-            System.out.println(reservation);
-
             for (RoomDAO roomDAO : roomDAOS) {
                 if (roomDAO.getId() == reservation.getRoomKindId())
                     roomDAO.setFreeRooms(roomDAO.getFreeRooms() - 1);
@@ -44,6 +41,15 @@ public class GetReservationController {
         }
     }
 
+    private List<RoomDAO> removeUnavailableRooms(List<RoomDAO> roomDAOS) {
+        List<RoomDAO> newRoomDAOS = new ArrayList<>();
+
+        for (RoomDAO roomDAO : roomDAOS) {
+            if (roomDAO.getFreeRooms() > 0)
+                newRoomDAOS.add(roomDAO);
+        }
+        return newRoomDAOS;
+    }
 
     @GetMapping("/reservation/{arrivalDate}/{departureDate}")
     public ResponseEntity<?> getAllRoomKind(@PathVariable Date arrivalDate, @PathVariable Date departureDate) {
@@ -57,7 +63,7 @@ public class GetReservationController {
         if (reservationEntities.size() > 1) {
             setAvailabilityOfRooms(roomDAOS, reservationEntities);
         }
-        return new ResponseEntity(roomDAOS, HttpStatus.OK);
+        return new ResponseEntity(removeUnavailableRooms(roomDAOS), HttpStatus.OK);
 
     }
 }
